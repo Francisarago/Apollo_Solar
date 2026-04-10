@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apollo Solar - Free Solar Sizing Guide</title>
+<meta name="description" content="Get a free solar system estimate for your home or business. Answer a few questions and receive 3 system options with pricing and ROI - from Apollo Solar Ventures Inc.">
+<meta property="og:title" content="Free Solar Estimate - Apollo Solar Ventures">
+<meta property="og:description" content="Find out how much you can save with solar. Get 3 system options with pricing and ROI in minutes.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#12100E">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>"></text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,900;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{--navy:#12100E;--navy-deep:#0C0A08;--navy-mid:#1C1710;--gold:#F7931E;--gold-soft:#FDB95B;--gold-glow:rgba(247,147,30,.12);--gold-border:rgba(247,147,30,.22);--green:#2ecc71;--green-soft:rgba(46,204,113,.12);--cream:#FAF7F2;--warm-gray:#8C8076;--text:#12100E;--text-dim:#8C8076;--shadow:rgba(18,16,14,.08);--radius:16px;--entry:#1B4F8A;--high:#2D7A3A;--ember:#C94B1A;--warm-border:#EDE9E2}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;line-height:1.7}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 85% -10%,rgba(247,147,30,.05) 0%,transparent 55%),radial-gradient(ellipse at 10% 100%,rgba(18,16,14,.03) 0%,transparent 50%)}
+.header{background:linear-gradient(160deg,#12100E 0%,#1E1A16 50%,#12100E 100%);position:relative;overflow:hidden}.header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(247,147,30,.1) 0%,transparent 60%);pointer-events:none}.header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),rgba(247,147,30,.2),var(--gold))}
+.header-inner{max-width:720px;margin:0 auto;padding:28px 24px 24px;position:relative;z-index:1}
+.logo-row{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.logo-sun{width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--gold) 0deg,var(--ember) 180deg,var(--gold) 360deg);box-shadow:0 0 20px rgba(247,147,30,.3);display:flex;align-items:center;justify-content:center;font-size:22px;animation:ps 3s ease-in-out infinite}
+@keyframes ps{0%,100%{box-shadow:0 0 20px rgba(247,147,30,.3)}50%{box-shadow:0 0 28px rgba(247,147,30,.5)}}
+.logo-text{font-family:'Playfair Display',serif;color:#fff;font-size:20px;font-weight:900;letter-spacing:-0.01em}.logo-sub{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.18em;text-transform:uppercase;font-weight:600}
+.header-headline{font-family:'Playfair Display',serif;font-size:clamp(22px,4.5vw,32px);color:#fff;font-weight:900;line-height:1.1;letter-spacing:-0.02em}.header-headline em{color:var(--gold-soft);font-style:normal}
+.header-desc{font-size:14px;color:rgba(255,255,255,.45);margin-top:10px;max-width:520px;line-height:1.75;font-weight:300}
+.main{max-width:720px;margin:0 auto;padding:28px 20px 80px;position:relative;z-index:1}
+.progress-wrap{margin-bottom:28px}.progress-top{display:flex;justify-content:space-between;margin-bottom:8px}
+.progress-label{font-size:12px;color:var(--warm-gray);font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.progress-step{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);font-weight:600}
+.progress-bar{height:5px;background:rgba(18,16,14,.08);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:3px;transition:width .5s}
+.q-card{background:#fff;border:1px solid var(--warm-border);border-radius:var(--radius);padding:32px 28px;box-shadow:0 4px 24px var(--shadow);animation:su .45s ease;position:relative}
+@keyframes su{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.q-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(247,147,30,.1);border:1px solid rgba(247,147,30,.2);padding:4px 12px;border-radius:50px;margin-bottom:14px}
+.q-text{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--navy);line-height:1.3;margin-bottom:6px}
+.q-help{font-size:13px;color:var(--text-dim);margin-bottom:20px;line-height:1.7;font-weight:300}
+.q-help .tip{display:inline-block;background:rgba(247,147,30,.08);border:1px solid rgba(247,147,30,.18);border-radius:10px;padding:8px 14px;margin-top:8px;font-size:12px;color:#92700C;line-height:1.5}
+.q-input{width:100%;padding:14px 18px;border:1.5px solid var(--warm-border);border-radius:12px;font-size:16px;font-family:'Outfit',sans-serif;color:var(--text);background:#fff;outline:none;transition:border-color .2s}
+.q-input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(247,147,30,.08)}.q-input::placeholder{color:#bbb5a8}
+.q-select{width:100%;padding:14px 18px;border:1.5px solid var(--warm-border);border-radius:12px;font-size:15px;font-family:'Outfit',sans-serif;color:var(--text);background:#fff;cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238C8076' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+.q-select:focus{border-color:var(--gold)}
+.input-with-unit{position:relative}.input-with-unit .unit-label{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--warm-gray);font-weight:600;pointer-events:none;font-family:'Outfit',sans-serif}.input-with-unit .q-input{padding-right:60px}
+.input-row{display:flex;gap:12px}.input-row>div{flex:1}
+.flabel{font-size:12px;color:var(--text-dim);font-weight:600;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:6px}
+.choices{display:grid;gap:10px}.choices.c2{grid-template-columns:1fr 1fr}@media(max-width:500px){.choices.c2{grid-template-columns:1fr}}
+.choice{border:1.5px solid var(--warm-border);border-radius:var(--radius);padding:18px 20px;cursor:pointer;transition:all .25s;background:#fff;position:relative}
+.choice:hover{border-color:rgba(247,147,30,.4);background:rgba(247,147,30,.04)}
+.choice.sel{border-color:var(--gold);background:rgba(247,147,30,.08);box-shadow:0 2px 16px rgba(247,147,30,.1)}
+.choice .ci{font-size:26px;margin-bottom:6px}.choice .ct{font-weight:600;font-size:15px;color:var(--navy)}
+.choice .cd{font-size:12px;color:var(--text-dim);margin-top:3px;line-height:1.6;font-weight:300}
+.choice.sel::after{content:'';position:absolute;top:12px;right:14px;width:22px;height:22px;border-radius:50%;background:var(--gold);color:var(--navy);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+/* Map */
+.map-wrap{border-radius:var(--radius);overflow:hidden;border:1.5px solid var(--warm-border);margin-bottom:16px;position:relative;z-index:10}
+#locMap,.result-map{width:100%;height:300px;z-index:10}
+.map-toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.map-btn{padding:10px 16px;border-radius:50px;border:1.5px solid var(--warm-border);background:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.map-btn:hover{border-color:var(--gold);background:rgba(247,147,30,.06)}
+.coords-display{background:#fff;border:1px solid var(--warm-border);border-radius:50px;padding:10px 14px;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--navy);display:none;align-items:center;gap:8px;flex-wrap:wrap}
+.coords-display .cl{font-family:'Outfit',sans-serif;font-size:11px;color:var(--warm-gray);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.coords-display .cv{color:var(--gold);font-weight:600}
+.pin-status{font-size:12px;margin-top:8px;padding:8px 12px;border-radius:50px;display:none;font-weight:500}
+.pin-status.ok{display:block;background:rgba(45,122,58,.08);color:#2D7A3A;border:1px solid rgba(45,122,58,.2)}
+.pin-status.err{display:block;background:rgba(201,75,26,.08);color:var(--ember);border:1px solid rgba(201,75,26,.2)}
+.addr-res{background:rgba(247,147,30,.06);border:1px solid rgba(247,147,30,.18);border-radius:var(--radius);padding:10px 14px;margin-top:10px;font-size:13px;color:#92700C;line-height:1.6;display:none;font-weight:300}
+.addr-res strong{color:#78350F}
+.search-row{display:flex;gap:8px;margin-bottom:12px}.search-row .q-input{flex:1;padding:12px 16px;font-size:14px}
+.search-btn{padding:12px 20px;border-radius:50px;border:none;background:var(--navy);color:var(--gold);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s}
+.search-btn:hover{background:#1E1A16}
+/* Battery slider */
+.slider-wrap{margin:20px 0}
+.slider-wrap input[type=range]{width:100%;-webkit-appearance:none;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--navy),var(--gold));outline:none}
+.slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--gold);border:3px solid #fff;box-shadow:0 2px 8px rgba(18,16,14,.2);cursor:pointer}
+.slider-val{text-align:center;font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--navy);margin:10px 0}
+.slider-sub{text-align:center;font-size:13px;color:var(--text-dim);font-weight:300}
+/* Nav */
+.nav-row{display:flex;justify-content:space-between;margin-top:24px}
+.btn{padding:13px 28px;border-radius:50px;border:none;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .25s}
+.btn-next{background:var(--gold);color:var(--navy);box-shadow:0 4px 16px rgba(247,147,30,.2)}.btn-next:hover{background:var(--gold-soft);transform:translateY(-2px)}
+.btn-back{background:transparent;color:var(--warm-gray);border:1.5px solid var(--warm-border)}.btn-back:hover{color:var(--text);border-color:var(--gold)}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:#fff;border-radius:var(--radius);max-width:600px;width:100%;max-height:85vh;overflow-y:auto;padding:32px 28px;box-shadow:0 20px 60px rgba(18,16,14,.4);position:relative}
+.modal-box h2{font-family:'Playfair Display',serif;color:var(--navy);font-size:20px;margin-bottom:16px;font-weight:700}
+.modal-box .close-btn{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(18,16,14,.06);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.modal-box .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+@media(max-width:500px){.modal-box .compare-grid{grid-template-columns:1fr}}
+.compare-card{border:1.5px solid var(--warm-border);border-radius:var(--radius);padding:20px;text-align:center}
+.compare-card h3{font-size:16px;color:var(--navy);margin-bottom:8px;font-weight:700}.compare-card .icon{font-size:36px;margin-bottom:8px}
+.compare-card ul{text-align:left;font-size:13px;color:var(--text-dim);padding-left:18px;line-height:1.8;font-weight:300}
+.modal-back-btn{margin-top:16px;width:100%;padding:14px;border-radius:50px;border:1.5px solid var(--navy);background:transparent;color:var(--navy);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer}
+/* Results */
+.result-wrap{animation:su .5s ease}
+.result-hero{background:linear-gradient(160deg,#12100E 0%,#1E1A16 50%,#12100E 100%);border-radius:var(--radius);padding:36px 28px;text-align:center;position:relative;overflow:hidden;margin-bottom:20px}
+.result-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(247,147,30,.1) 0%,transparent 65%);pointer-events:none}
+.result-hero h2{font-family:'Playfair Display',serif;color:#fff;font-size:22px;position:relative;font-weight:900}
+.result-hero .rs{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--gold-soft);margin:12px 0 4px;position:relative}
+.result-hero .ru{font-size:14px;color:rgba(255,255,255,.4);letter-spacing:.1em;position:relative;font-weight:300}
+.sc{background:#fff;border:1px solid var(--warm-border);border-radius:var(--radius);padding:24px 28px;box-shadow:0 2px 16px var(--shadow);margin-bottom:16px}
+.sc h3{font-family:'Playfair Display',serif;font-size:16px;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px;font-weight:700}
+.st{width:100%;font-size:14px}.st tr td{padding:8px 0;border-bottom:1px solid rgba(18,16,14,.04)}.st tr:last-child td{border-bottom:none}
+.st .sl{color:var(--text-dim);font-weight:400;width:50%}.st .sv{font-weight:600;color:var(--navy);text-align:right}
+.st .sv.mono{font-family:'JetBrains Mono',monospace;font-size:13px}
+.result-map-wrap{border-radius:var(--radius);overflow:hidden;border:1px solid var(--warm-border);margin-top:14px}
+
+/* 3-Tier Options */
+.options-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:600px){.options-grid{grid-template-columns:1fr}}
+.opt-card{background:#fff;border-radius:var(--radius);padding:20px 16px;box-shadow:0 2px 16px var(--shadow);text-align:center;position:relative;overflow:hidden;transition:transform .2s;border:1px solid var(--warm-border)}
+.opt-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(18,16,14,.09)}
+.opt-card.entry{border-top:4px solid var(--entry)}
+.opt-card.mid{border-top:4px solid var(--gold)}
+.opt-card.high{border-top:4px solid var(--high)}
+.opt-badge{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;padding:3px 12px;border-radius:50px;margin-bottom:10px}
+.opt-card.entry .opt-badge{background:rgba(27,79,138,.1);color:var(--entry)}
+.opt-card.mid .opt-badge{background:rgba(247,147,30,.1);color:#92700C}
+.opt-card.high .opt-badge{background:rgba(45,122,58,.1);color:var(--high)}
+.opt-card h4{font-family:'Playfair Display',serif;font-size:15px;color:var(--navy);margin-bottom:4px;font-weight:700}
+.opt-card .opt-sub{font-size:11px;color:var(--text-dim);margin-bottom:12px;font-weight:300}
+.opt-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(18,16,14,.04);font-size:12px}
+.opt-row:last-child{border:none}
+.opt-row .lbl{color:var(--text-dim);font-weight:300}.opt-row .val{font-weight:600;color:var(--text)}
+.opt-price{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin:12px 0 4px;font-weight:700}
+.opt-per-wp{font-size:11px;color:var(--text-dim);margin-bottom:6px;font-weight:300}
+
+/* ROI Grid */
+.roi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:600px){.roi-grid{grid-template-columns:1fr}}
+.roi-card{background:#fff;border-radius:var(--radius);padding:18px;box-shadow:0 2px 12px var(--shadow);text-align:center;border:1px solid var(--warm-border)}
+.roi-card.entry{border-left:4px solid var(--entry)}
+.roi-card.mid{border-left:4px solid var(--gold)}
+.roi-card.high{border-left:4px solid var(--high)}
+.roi-years{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);font-weight:700}
+.roi-years small{font-size:11px;color:var(--text-dim);font-family:'Outfit',sans-serif;font-weight:300}
+.roi-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid rgba(18,16,14,.04)}
+.roi-row:last-child{border:none}
+.roi-row .lbl{color:var(--text-dim);font-weight:300}.roi-row .val{font-weight:600}
+
+.note-box{background:rgba(247,147,30,.06);border-left:3px solid var(--gold);border-radius:0 var(--radius) var(--radius) 0;padding:14px 18px;font-size:12px;color:#92700C;margin-bottom:16px;line-height:1.7;font-weight:300}
+.note-box strong{color:#78350F}
+.cta-box{background:linear-gradient(160deg,#12100E 0%,#1E1A16 50%,#12100E 100%);border-radius:var(--radius);padding:28px;text-align:center;margin-top:20px;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 120%,rgba(247,147,30,.08) 0%,transparent 60%);pointer-events:none}
+.cta-box h3{font-family:'Playfair Display',serif;color:#fff;font-size:18px;margin-bottom:6px;position:relative;font-weight:700}
+.cta-box p{color:rgba(255,255,255,.4);font-size:13px;margin-bottom:16px;position:relative;font-weight:300}
+.btn-gold{padding:14px 36px;border-radius:50px;border:none;background:var(--gold);color:var(--navy);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(247,147,30,.25);transition:all .25s;position:relative}
+.btn-gold:hover{background:var(--gold-soft);transform:translateY(-2px)}
+.footer-bar{text-align:center;margin-top:32px;padding-top:20px;border-top:1px solid rgba(18,16,14,.06);font-size:11px;color:var(--warm-gray);font-weight:300}.footer-bar strong{color:var(--navy)}
+
+/* Input Validation */
+.field-error{border-color:var(--ember)!important;box-shadow:0 0 0 4px rgba(201,75,26,.08)!important}
+.error-msg{font-size:11px;color:var(--ember);margin-top:4px;display:none;font-weight:500}
+.error-msg.show{display:block}
+.avg-box{background:rgba(247,147,30,.06);border:1.5px solid rgba(247,147,30,.2);border-radius:var(--radius);padding:16px 20px;text-align:center;margin-top:14px}
+.avg-box .avg-label{font-size:11px;color:#92700C;text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:4px}
+.avg-box .avg-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--navy)}
+.avg-box .avg-sub{font-size:11px;color:var(--text-dim);margin-top:2px;font-weight:300}
+</style>
+</head>
+<body>
+
+
+<div class="main">
+<div class="progress-wrap">
+  <div class="progress-top">
+    <span class="progress-label" id="pLabel"></span>
+    <span class="progress-step" id="pStep"></span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="pFill" style="width:8%"></div>
+  </div>
+</div>
+
+<div id="Q"></div>
+<div id="modalContainer"></div>
+</div>
+
+<script>
+// CONSTANTS
+const PSH=4.25,LOSS=.20,DEGRAD=.005;
+const DU_RATES={meralco:11.50,batelec1:10.80,batelec2:10.50,lima:9.00,other:10.00};
+const DIR_F={south:1,southeast:.95,southwest:.95,east:.88,west:.88,north:.75,flat:.97,unknown:.95};
+
+// TIER DATABASE (from Apollo Product Price Database)
+const TIERS={
+  'gridtied':{
+    entry:{label:'Entry Level',tag:'OPTION 1',color:'entry',
+      panel:{w:510,price:4000,area:2.58},
+      inv:{kw:6,price:24000},
+      mount:{rail:600,lfoot:80,rcon:100,mid:50,end:50},
+      prot:{dcmcb:450,dcspd:950,acmcb:350,acspd:450},
+      wire:{pv:100,gnd:5600,ac:8600,hdpe:150,clamp:5,elbow:10,tray:400},
+      cons:{mc4:60,lug:4,comb:1500,grod:1000,ctie:140,cement:100,seal:150},
+      labor:49600,markup:0.25
+    },
+    mid:{label:'Mid Range',tag:'OPTION 2',color:'mid',
+      panel:{w:620,price:5000,area:2.80},
+      inv:{kw:6,price:23000},
+      mount:{rail:530,lfoot:58,rcon:55,mid:35,end:35},
+      prot:{dcmcb:550,dcspd:780,acmcb:180,acspd:590},
+      wire:{pv:110,gnd:5600,ac:8600,hdpe:150,clamp:5,elbow:10,tray:400},
+      cons:{mc4:65,lug:4,comb:1500,grod:1000,ctie:140,cement:100,seal:150},
+      labor:49600,markup:0.25
+    },
+    high:{label:'High End',tag:'OPTION 3',color:'high',
+      panel:{w:715,price:5600,area:3.11},
+      inv:{kw:8,price:34500},
+      mount:{rail:530,lfoot:58,rcon:55,mid:35,end:35},
+      prot:{dcmcb:550,dcspd:780,acmcb:180,acspd:590,rsd:7500},
+      wire:{pv:110,gnd:5600,ac:8600,hdpe:150,clamp:5,elbow:10,tray:400},
+      cons:{mc4:65,lug:4,comb:1500,grod:1000,ctie:140,cement:100,seal:150},
+      labor:49600,markup:0.25
+    }
+  },
+  'hybrid':{
+    entry:{label:'Entry Level',tag:'OPTION 1',color:'entry',
+      panel:{w:510,price:4000,area:2.58},
+      inv:{kw:8,price:57700},
+      batt:{kwh:6.14,price:42000},
+      mount:{rail:600,lfoot:80,rcon:100,mid:50,end:50},
+      prot:{dcmcb:450,dcspd:950,acmcb:350,acspd:450,ats:2000,battmccb:3900},
+      wire:{pv:100,gnd:5600,ac:8600,hdpe:150,clamp:5,elbow:10,tray:400,battcable:950,battcableQty:4},
+      cons:{mc4:60,lug:4,comb:1500,grod:1000,ctie:140,cement:100,seal:150},
+      labor:49600,markup:0.25
+    },
+    mid:{label:'Mid Range',tag:'OPTION 2',color:'mid',
+      panel:{w:620,price:5000,area:2.80},
+      inv:{kw:8,price:64000},
+      batt:{kwh:14.34,price:77000},
+      mount:{rail:530,lfoot:58,rcon:55,mid:35,end:35},
+      prot:{dcmcb:550,dcspd:780,acmcb:180,acspd:590,ats:2000,battmccb:3900},
+      wire:{pv:110,gnd:5600,ac:8600,hdpe:150,clamp:5,elbow:10,tray:400,battcable:950,battcableQty:4},
+      cons:{mc4:65,lug:4,comb:1500,grod:1000,ctie:140,cement:100,seal:150},
+      labor:49600,markup:0.25
+    },
+    high:{label:'High End',tag:'OPTION 3',color:'high',
+      panel:{w:715,price:5600,area:3.11},
+      inv:{kw:10,price:68000},
+      batt:{kwh:16,price:94000},
+      mount:{rail:530,lfoot:58,rcon:55,mid:35,end:35},
+      prot:{dcmcb:550,dcspd:780,acmcb:180,acspd:590,ats:6000,battmccb:3900,rsd:7500},
+      wire:{pv:110,gnd:5600,ac:8600,hdpe:150,clamp:5,elbow:10,tray:400,battcable:950,battcableQty:4},
+      cons:{mc4:65,lug:4,comb:1500,grod:1000,ctie:140,cement:100,seal:150},
+      labor:49600,markup:0.25
+    }
+  }
+};
+
+// STATE
+let cQ=0,locMap=null,locMarker=null;
+const A={};
+
+// Steps: removed panelChoice, inverterChoice, trafo - client must not see product models
+const STEPS=[
+  {id:'clientName',badge:'About You',label:'Your Name'},
+  {id:'propertyType',badge:'Your Property',label:'Property Type'},
+  {id:'siteLocation',badge:'Location',label:'Pin Location'},
+  {id:'contactNumber',badge:'Contact',label:'Contact Info'},
+  {id:'priority',badge:'Your Priority',label:'Solar Priority'},
+  {id:'sysType',badge:'System Type',label:'System Type'},
+  {id:'consumption',badge:'Electricity',label:'Electric Bill'},
+  {id:'roofInfo',badge:'Your Roof',label:'Roof Details'},
+  {id:'battery',badge:'Battery',label:'Battery Backup'},
+  {id:'budget',badge:'Budget',label:'Budget'},
+  {id:'timeline',badge:'Timeline',label:'Timeline'}
+];
+
+function shouldShow(idx){
+  const s=STEPS[idx];
+  if(s.id==='contactNumber') return false;
+  if(s.id==='battery'&&A.sysType!=='hybrid') return false;
+  return true;
+}
+function getVisibleSteps(){return STEPS.filter((_,i)=>shouldShow(i))}
+function getVisibleIndex(){
+  let vi=0;
+  for(let i=0;i<cQ;i++) if(shouldShow(i)) vi++;
+  return vi;
+}
+
+// MAP
+function mkIcon(){return L.divIcon({className:'',iconSize:[32,32],iconAnchor:[16,32],html:'<div style="width:32px;height:32px;background:conic-gradient(#F7931E 0deg,#C94B1A 180deg,#F7931E 360deg);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 2px 12px rgba(18,16,14,.3);display:flex;align-items:center;justify-content:center"><span style="transform:rotate(45deg);font-size:14px">"</span></div>'})}
+function initMap(){
+  locMarker=null;
+  if(locMap){try{locMap.remove()}catch(e){};locMap=null}
+  const el=document.getElementById('locMap');
+  if(!el)return;
+  const lat=A._lat||13.9417,lng=A._lng||121.1632,z=A._lat?17:12;
+  locMap=L.map('locMap',{zoomControl:true,tap:true}).setView([lat,lng],z);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(locMap);
+  if(A._lat&&A._lng){
+    locMarker=L.marker([A._lat,A._lng],{icon:mkIcon(),draggable:true}).addTo(locMap);
+    locMarker.on('dragend',onMarkerDrag);
+    showCoords(A._lat,A._lng);
+  }
+  locMap.on('click',function(e){
+    const lat=e.latlng.lat,lng=e.latlng.lng;
+    // Check if clicked on land via reverse geocode before placing pin
+    const ps=document.getElementById('pStat');
+    if(ps){ps.className='pin-status ok';ps.textContent='Checking location...'}
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,{headers:{'Accept-Language':'en'}})
+    .then(r=>r.json()).then(d=>{
+      if(d?.error||!d?.address||(d.address.natural&&/water|sea|ocean|bay|strait|lake|river/i.test(d.address.natural))||(!d.address.country&&!d.address.city&&!d.address.town&&!d.address.village&&!d.address.municipality&&!d.address.suburb)){
+        if(ps){ps.className='pin-status err';ps.textContent='That\'s water! Please pin a location on land.'}
+        return;
+      }
+      if(locMarker){locMarker.setLatLng([lat,lng])}else{
+        locMarker=L.marker([lat,lng],{icon:mkIcon(),draggable:true}).addTo(locMap);
+        locMarker.on('dragend',onMarkerDrag);
+      }
+      A._lat=lat;A._lng=lng;showCoords(lat,lng);
+      A._addr=d.display_name;
+      if(d.address){A._city=d.address.city||d.address.town||d.address.municipality||'';A._prov=d.address.state||d.address.province||'';A._brgy=d.address.suburb||d.address.village||d.address.neighbourhood||''}
+      const ae=document.getElementById('aRes');if(ae){ae.style.display='block';ae.innerHTML=`<strong></strong> ${d.display_name}`}
+      const inp=document.getElementById('iAddr');if(inp)inp.value=d.display_name;
+    }).catch(()=>{
+      // Offline fallback - allow pin but warn
+      if(locMarker){locMarker.setLatLng([lat,lng])}else{
+        locMarker=L.marker([lat,lng],{icon:mkIcon(),draggable:true}).addTo(locMap);
+        locMarker.on('dragend',onMarkerDrag);
+      }
+      A._lat=lat;A._lng=lng;showCoords(lat,lng);
+      if(ps){ps.className='pin-status ok';ps.textContent='Pin placed (address lookup unavailable).'}
+    });
+  });
+  setTimeout(()=>locMap.invalidateSize(),200);
+  setTimeout(()=>locMap.invalidateSize(),500);
+  setTimeout(()=>locMap.invalidateSize(),1000);
+}
+function onMarkerDrag(e){const p=e.target.getLatLng();A._lat=p.lat;A._lng=p.lng;showCoords(p.lat,p.lng);revGeo(p.lat,p.lng,true)}
+function placePin(lat,lng){
+  if(locMarker){locMarker.setLatLng([lat,lng])}else{
+    locMarker=L.marker([lat,lng],{icon:mkIcon(),draggable:true}).addTo(locMap);
+    locMarker.on('dragend',onMarkerDrag);
+  }
+  A._lat=lat;A._lng=lng;showCoords(lat,lng);revGeo(lat,lng,true);
+}
+function showCoords(lat,lng){const e=document.getElementById('cDisp');if(e){e.innerHTML=`<span class="cl">Lat:</span> <span class="cv">${lat.toFixed(6)}</span><span style="color:#ddd;margin:0 4px">|</span><span class="cl">Lng:</span> <span class="cv">${lng.toFixed(6)}</span>`;e.style.display='flex'}const p=document.getElementById('pStat');if(p){p.className='pin-status ok';p.textContent='Pin placed! Drag to fine-tune.'}}
+function revGeo(lat,lng,updateSearchBar){const e=document.getElementById('aRes');if(e){e.style.display='block';e.innerHTML='Looking up address...'}fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,{headers:{'Accept-Language':'en'}}).then(r=>r.json()).then(d=>{if(d?.display_name){A._addr=d.display_name;if(d.address){A._city=d.address.city||d.address.town||d.address.municipality||'';A._prov=d.address.state||d.address.province||'';A._brgy=d.address.suburb||d.address.village||d.address.neighbourhood||''}if(e)e.innerHTML=`<strong></strong> ${d.display_name}`;const inp=document.getElementById('iAddr');if(inp&&updateSearchBar)inp.value=d.display_name}}).catch(()=>{if(e)e.innerHTML='Could not resolve - coordinates saved.'})}
+function resetMapPin(){
+  // Full reset of all location data
+  A._lat=undefined;A._lng=undefined;A._addr='';A._city='';A._prov='';A._brgy='';A.siteAddress='';
+  if(locMarker){locMap.removeLayer(locMarker);locMarker=null}
+  if(locMap)locMap.setView([13.9417,121.1632],12);
+  const inp=document.getElementById('iAddr');if(inp)inp.value='';
+  const cd=document.getElementById('cDisp');if(cd){cd.style.display='none';cd.innerHTML=''}
+  const ps=document.getElementById('pStat');if(ps){ps.className='pin-status';ps.style.display='none';ps.textContent=''}
+  const ar=document.getElementById('aRes');if(ar){ar.style.display='none';ar.innerHTML=''}
+}
+function searchAddr(){
+  const q=document.getElementById('iAddr')?.value?.trim();if(!q)return;
+  const b=document.getElementById('sBtn');if(b){b.textContent='...';b.disabled=true}
+  fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(q)+'&limit=1&countrycodes=ph')
+  .then(r=>r.json()).then(d=>{
+    if(b){b.textContent='';b.disabled=false}
+    if(d&&d.length>0){var lat=parseFloat(d[0].lat),lng=parseFloat(d[0].lon);if(locMap)locMap.setView([lat,lng],17);placePin(lat,lng);A._addr=d[0].display_name;var el=document.getElementById('aRes');if(el){el.style.display='block';el.innerHTML='<strong> Found:</strong> '+d[0].display_name}}
+    else{var ps=document.getElementById('pStat');if(ps){ps.className='pin-status err';ps.textContent='Not found. Try simpler search or tap the map.'}}
+  }).catch(()=>{if(b){b.textContent='';b.disabled=false}});
+}
+function useGPS(){
+  const ps=document.getElementById('pStat');
+  if(!navigator.geolocation){
+    if(ps){ps.className='pin-status err';ps.textContent='GPS not available on this device or browser. Try searching your address instead.'}
+    return;
+  }
+  if(ps){ps.className='pin-status ok';ps.textContent='Requesting your location... Please allow when prompted.'}
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      var lat=pos.coords.latitude,lng=pos.coords.longitude;
+      if(locMap)locMap.setView([lat,lng],17);
+      placePin(lat,lng);
+      if(ps){ps.className='pin-status ok';ps.textContent='GPS location found! Drag the pin to fine-tune.'}
+    },
+    function(err){
+      var msg='';
+      switch(err.code){
+        case 1:msg+='Location permission denied. Please allow location access in your browser settings, or search/tap the map instead.';break;
+        case 2:msg+='Could not determine your location. Please search your address or tap the map.';break;
+        case 3:msg+='Location request timed out. Please try again, search your address, or tap the map.';break;
+        default:msg+='GPS unavailable. Please search your address or tap the map.';
+      }
+      if(ps){ps.className='pin-status err';ps.textContent=msg}
+    },
+    {enableHighAccuracy:true,timeout:20000,maximumAge:60000}
+  );
+}
+
+// EDUCATION MODAL
+function showLearnModal(){
+  document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box">
+    <button class="close-btn" onclick="closeModal()">×</button>
+    <h2>Grid-Tied vs Hybrid</h2>
+    <p style="font-size:14px;color:var(--text-dim);margin-bottom:16px">Not sure which system type is right for you? Here's a simple comparison:</p>
+    <div class="compare-grid">
+      <div class="compare-card"><div class="icon"></div><h3>Grid-Tied</h3><ul>
+        <li>Connected to the electric grid</li><li>No batteries needed</li><li>Excess power exported for bill credits (Net Metering)</li>
+        <li>Does NOT work during power outages</li><li>Lower cost - best for savings</li><li>Best for: Businesses open during daytime</li>
+      </ul></div>
+      <div class="compare-card"><div class="icon"></div><h3>Hybrid</h3><ul>
+        <li>Connected to grid + has battery backup</li><li>Stores excess solar in batteries</li><li>Works during power outages</li>
+        <li>Can also do Net Metering</li><li>Higher cost - but gives power security</li><li>Best for: Homes, clinics, areas with frequent outages</li>
+      </ul></div>
+    </div>
+    <div class="note-box" style="margin-top:12px"> <strong>Still unsure?</strong> If your area experiences frequent brownouts or you need power 24/7 (e.g. for refrigeration, medical equipment, or security), go Hybrid. If you just want to cut your electric bill, Grid-Tied is the most cost-effective option.</div>
+    <button class="modal-back-btn" onclick="closeModal()">Got it, take me back to choose</button>
+  </div></div>`;
+}
+function closeModal(){document.getElementById('modalContainer').innerHTML=''}
+
+// INPUT VALIDATION
+function isValidName(v){return /^[A-Za-zÀ-ÿñÑ\s.\-,()&']+$/.test(v)&&v.length>=2}
+function isValidPhone(v){const digits=v.replace(/\D/g,'');return digits.length>=10&&digits.length<=11}
+function isValidEmail(v){return !v||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)}
+function isPositiveNum(v){return !isNaN(v)&&parseFloat(v)>0}
+function showFieldError(id,msg){
+  const el=document.getElementById(id);if(el)el.classList.add('field-error');
+  const em=document.getElementById(id+'Err');if(em){em.textContent=msg;em.classList.add('show')}
+}
+function clearFieldError(id){
+  const el=document.getElementById(id);if(el)el.classList.remove('field-error');
+  const em=document.getElementById(id+'Err');if(em)em.classList.remove('show');
+}
+function preventNonNumeric(e){
+  // Allow: backspace, delete, tab, escape, enter, decimal point, arrow keys
+  if([46,8,9,27,13,110,190].includes(e.keyCode)||
+    (e.keyCode>=35&&e.keyCode<=40)||
+    (e.ctrlKey&&[65,67,86,88].includes(e.keyCode))) return;
+  if((e.shiftKey||(e.keyCode<48||e.keyCode>57))&&(e.keyCode<96||e.keyCode>105)) e.preventDefault();
+}
+function preventNumeric(e){
+  if(e.key&&/\d/.test(e.key)&&!e.ctrlKey&&!e.metaKey) e.preventDefault();
+}
+function calcBillAverage(){
+  const b1=parseFloat(document.getElementById('iBill1')?.value)||0;
+  const b2=parseFloat(document.getElementById('iBill2')?.value)||0;
+  const b3=parseFloat(document.getElementById('iBill3')?.value)||0;
+  let count=0,sum=0;
+  if(b1>0){count++;sum+=b1}
+  if(b2>0){count++;sum+=b2}
+  if(b3>0){count++;sum+=b3}
+  const avg=count>0?(sum/count):0;
+  const el=document.getElementById('avgBox');
+  if(el){
+    if(avg>0){
+      el.style.display='block';
+      el.innerHTML=`<div class="avg-label">Average Monthly Bill</div><div class="avg-val">${avg.toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2})}</div><div class="avg-sub">This will be used as the basis for system sizing</div>`;
+    }else{el.style.display='none'}
+  }
+  A._billAvg=avg;
+}
+
+// RENDER
+function render(){
+  const area=document.getElementById('Q');
+  while(cQ<STEPS.length&&!shouldShow(cQ))cQ++;
+  if(cQ>=STEPS.length){showResults();return}
+  const s=STEPS[cQ],vis=getVisibleSteps(),vi=getVisibleIndex();
+  document.getElementById('pFill').style.width=((vi+1)/(vis.length+1)*100)+'%';
+  document.getElementById('pStep').textContent=`${vi+1} / ${vis.length}`;
+  document.getElementById('pLabel').textContent=s.label;
+  let h=`<div class="q-card"><div class="q-badge">${s.badge}</div>`;
+
+  switch(s.id){
+    case 'clientName':
+      h+=`<div class="q-text">Let's get to know you</div><div class="q-help">We need your details so our solar consultant can reach you with your personalized recommendation and quotation.</div>`;
+      h+=`<label class="flabel">Full Name / Company Name <span style="color:var(--gold)">*</span></label><input class="q-input" id="iName" placeholder="e.g. Juan dela Cruz / ABC Corporation" value="${A.clientName||''}" onkeypress="preventNumeric(event)" oninput="clearFieldError('iName')"><div class="error-msg" id="iNameErr">Please enter a valid name (letters only, no numbers)</div>`;
+      h+=`<label class="flabel" style="margin-top:14px">Mobile Number <span style="color:var(--gold)">*</span></label><input class="q-input" id="iPhone" type="tel" placeholder="09171234567" value="${A.contactNumber||''}" inputmode="tel" maxlength="13" onkeypress="if(!/[\\d\\s\\+\\-()]/.test(event.key)&&!event.ctrlKey)event.preventDefault()" oninput="clearFieldError('iPhone')"><div class="error-msg" id="iPhoneErr">Please enter a valid mobile number (10-11 digits)</div>`;
+      h+=`<div style="font-size:11px;color:var(--text-dim);margin-top:4px">We'll use this to contact you for your free site inspection and quotation.</div>`;
+      h+=`<label class="flabel" style="margin-top:14px">Email Address <span style="color:var(--text-dim);font-weight:400">(optional)</span></label><input class="q-input" id="iEmail" type="email" placeholder="email@example.com" value="${A.email||''}" oninput="clearFieldError('iEmail')"><div class="error-msg" id="iEmailErr">Please enter a valid email address</div>`;
+      break;
+    case 'propertyType':
+      h+=`<div class="q-text">What type of property?</div><div class="q-help">Different properties have different energy profiles.</div>`;
+      h+=mkChoices('propertyType',[
+        {v:'residential',i:'',t:'Residential',d:'Home or apartment'},
+        {v:'commercial',i:'',t:'Commercial',d:'Office, shop, restaurant, hotel'},
+        {v:'industrial',i:'',t:'Industrial',d:'Factory, warehouse, cold storage'},
+        {v:'institutional',i:'',t:'Institutional',d:'School, hospital, government'}
+      ],true);
+      break;
+    case 'siteLocation':
+      h+=`<div class="q-text">Where is the property located?</div><div class="q-help">Pin the exact location on the map for precise coordinates.</div>`;
+      h+=`<div class="search-row"><input class="q-input" id="iAddr" placeholder="Type address, e.g. Lipa City, Batangas" value="${A._addr||A.siteAddress||''}"><button class="search-btn" id="sBtn" onclick="searchAddr()"></button></div>`;
+      h+=`<div class="map-toolbar"><button class="map-btn" onclick="useGPS()"> Use GPS</button><button class="map-btn" onclick="resetMapPin()"> Reset</button></div>`;
+      h+=`<div class="map-wrap"><div id="locMap"></div></div>`;
+      h+=`<div class="coords-display" id="cDisp"></div><div class="pin-status" id="pStat"></div><div class="addr-res" id="aRes"></div>`;
+      h+=`<div class="q-help" style="margin-top:12px;margin-bottom:0"><div class="tip"> Type address + Search, tap "Use GPS", or tap the map. Drag pin to fine-tune.</div></div>`;
+      break;
+    case 'priority':
+      h+=`<div class="q-text">What is your primary goal for going solar?</div><div class="q-help">This determines the best system configuration for your needs.</div>`;
+      h+=mkChoices('priority',[
+        {v:'savings',i:'',t:'Reduce my electricity bill',d:'Use solar during the day, stay on grid at night. Simplest and most affordable.'},
+        {v:'zeroBill',i:'',t:'Savings + possible Zero Bill via Net Metering',d:'Export excess solar to the grid for bill credits. May achieve 0 electric bill.'},
+        {v:'backup',i:'',t:'Power backup during outages',d:'Solar + battery - keep critical loads running when the grid goes down.'},
+        {v:'offgrid',i:'',t:'Total power without the grid',d:'Full energy independence. Large battery bank for 24/7 solar power.'}
+      ],false);
+      break;
+    case 'sysType':
+      h+=`<div class="q-text">Which system type is right for you?</div>`;
+      h+=`<div class="q-help">Based on your goal, here's what we recommend. You can also change this.`;
+      if(!A.priority||A.priority==='savings'||A.priority==='zeroBill') h+=`<div class="tip"> Based on your goal, <strong>Grid-Tied</strong> is recommended. It's the most cost-effective option.</div>`;
+      else h+=`<div class="tip"> Based on your goal, <strong>Hybrid</strong> is recommended so you have battery backup.</div>`;
+      h+=`</div>`;
+      h+=mkChoices('sysType',[
+        {v:'gridtied',i:'',t:'Grid-Tied',d:'Connected to grid. No batteries. Best for savings & net metering.'},
+        {v:'hybrid',i:'',t:'Hybrid',d:'Solar + battery. Works during outages. Can also do net metering.'}
+      ],true);
+      h+=`<div style="text-align:center;margin-top:14px"><button class="btn-back" style="border:2px solid var(--navy);color:var(--navy);padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;background:transparent" onclick="showLearnModal()"> Help me decide - what's the difference?</button></div>`;
+      break;
+
+    case 'consumption':
+      h+=`<div class="q-text">Tell us about your electric bill</div>`;
+      h+=`<div class="q-help">Enter your last 3 monthly bill amounts in pesos. We'll use the <strong>average</strong> as the basis for sizing your solar system.<div class="tip"> Having 3 consecutive months gives a more accurate average, accounting for seasonal variation.</div></div>`;
+
+      // 3 monthly bill fields with validation -  on left
+      h+=`<label class="flabel">Month 1 Bill Amount <span style="color:var(--gold)">*</span></label>`;
+      h+=`<div style="position:relative;margin-bottom:4px"><span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--warm-gray);font-weight:700;pointer-events:none"></span><input class="q-input" type="number" id="iBill1" placeholder="e.g. 8500.00" value="${A._bill1||''}" min="0" step="any" style="padding-left:36px" oninput="clearFieldError('iBill1');calcBillAverage()"></div>`;
+      h+=`<div class="error-msg" id="iBill1Err">Please enter a valid peso amount</div>`;
+
+      h+=`<label class="flabel" style="margin-top:10px">Month 2 Bill Amount</label>`;
+      h+=`<div style="position:relative;margin-bottom:4px"><span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--warm-gray);font-weight:700;pointer-events:none"></span><input class="q-input" type="number" id="iBill2" placeholder="e.g. 9200.50" value="${A._bill2||''}" min="0" step="any" style="padding-left:36px" oninput="clearFieldError('iBill2');calcBillAverage()"></div>`;
+      h+=`<div class="error-msg" id="iBill2Err">Please enter a valid peso amount</div>`;
+
+      h+=`<label class="flabel" style="margin-top:10px">Month 3 Bill Amount</label>`;
+      h+=`<div style="position:relative;margin-bottom:4px"><span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--warm-gray);font-weight:700;pointer-events:none"></span><input class="q-input" type="number" id="iBill3" placeholder="e.g. 7800.75" value="${A._bill3||''}" min="0" step="any" style="padding-left:36px" oninput="clearFieldError('iBill3');calcBillAverage()"></div>`;
+      h+=`<div class="error-msg" id="iBill3Err">Please enter a valid peso amount</div>`;
+
+      // Average display
+      const avgNow=A._billAvg||0;
+      h+=`<div class="avg-box" id="avgBox" style="display:${avgNow>0?'block':'none'}">`;
+      if(avgNow>0) h+=`<div class="avg-label">Average Monthly Bill</div><div class="avg-val">${avgNow.toLocaleString()}</div><div class="avg-sub">This will be used as the basis for system sizing</div>`;
+      h+=`</div>`;
+
+      // Distribution Utility
+      h+=`<label class="flabel" style="margin-top:18px">Distribution Utility (Electric Provider)</label>`;
+      h+=`<select class="q-select" id="iDu"><option value="">- Select provider -</option><option value="meralco" ${A._du==='meralco'?'selected':''}>Meralco (~11.50/kWh)</option><option value="batelec1" ${A._du==='batelec1'?'selected':''}>BATELEC I (~10.80/kWh)</option><option value="batelec2" ${A._du==='batelec2'?'selected':''}>BATELEC II (~10.50/kWh)</option><option value="lima" ${A._du==='lima'?'selected':''}>Lima EnerZone (~9.00/kWh)</option><option value="other" ${A._du==='other'?'selected':''}>Other (~10.00/kWh)</option></select>`;
+      break;
+
+    case 'roofInfo':
+      h+=`<div class="q-text">Tell us about your roof</div><div class="q-help">Approximate values are fine - this helps us check panel fit.</div>`;
+      h+=`<label class="flabel">Roof Type</label><select class="q-select" id="iRoofType" style="margin-bottom:14px"><option value="metal" ${A._roofType==='metal'?'selected':''}>Metal / Corrugated GI</option><option value="concrete" ${A._roofType==='concrete'?'selected':''}>Concrete / Flat Slab</option><option value="tile" ${A._roofType==='tile'?'selected':''}>Tile / Clay</option><option value="ground" ${A._roofType==='ground'?'selected':''}>Ground Mount</option></select>`;
+      h+=`<label class="flabel">Roof Dimensions (meters)</label><div class="input-row"><div class="input-with-unit"><input class="q-input" type="number" id="iRL" placeholder="Length" step=".5" min="0" value="${A._roofL||''}" onkeypress="preventNonNumeric(event)"><span class="unit-label">m</span></div><div style="display:flex;align-items:center;font-size:20px;color:var(--warm-gray);padding:0 4px">×</div><div class="input-with-unit"><input class="q-input" type="number" id="iRW" placeholder="Width" step=".5" min="0" value="${A._roofW||''}" onkeypress="preventNonNumeric(event)"><span class="unit-label">m</span></div></div>`;
+      h+=`<label class="flabel" style="margin-top:14px">Roof Direction</label><select class="q-select" id="iRD"><option value="unknown" ${(A._roofDir||'unknown')==='unknown'?'selected':''}>I'm not sure</option><option value="south" ${A._roofDir==='south'?'selected':''}>South (ideal)</option><option value="southeast" ${A._roofDir==='southeast'?'selected':''}>Southeast</option><option value="southwest" ${A._roofDir==='southwest'?'selected':''}>Southwest</option><option value="east" ${A._roofDir==='east'?'selected':''}>East</option><option value="west" ${A._roofDir==='west'?'selected':''}>West</option><option value="flat" ${A._roofDir==='flat'?'selected':''}>Flat</option><option value="north" ${A._roofDir==='north'?'selected':''}>North</option></select>`;
+      h+=`<label class="flabel" style="margin-top:14px">Obstructions?</label><input class="q-input" id="iObs" placeholder="e.g. water tank, AC units, trees" value="${A._obs||''}">`;
+      break;
+    case 'battery':
+      const avgKw=getAvgLoadKw();
+      const hrs=A._battHrs||4;
+      const battKwh=Math.ceil(avgKw*hrs/.9/5.12)*5.12;
+      h+=`<div class="q-text">How many hours of backup power do you need?</div>`;
+      h+=`<div class="q-help">Slide to set your desired backup duration. We'll calculate the battery bank size automatically based on your usage.<div class="tip"> Typical: 4 hours for outage protection, 8+ hours for near-independence.</div></div>`;
+      h+=`<div class="slider-wrap"><input type="range" id="iBattHrs" min="1" max="16" step="1" value="${hrs}" oninput="updateBattCalc()"><div class="slider-val" id="battHrsVal">${hrs} hours</div><div class="slider-sub" id="battCalcVal"> ${battKwh.toFixed(1)} kWh battery bank needed (${Math.ceil(battKwh/5.12)} × 51.2V 100Ah units)</div></div>`;
+      h+=`<label class="flabel" style="margin-top:16px">Estimated Critical Load (kW)</label><div class="input-with-unit"><input class="q-input" type="number" id="iBattLoad" step=".1" placeholder="Auto-calculated" value="${A._battLoad||avgKw.toFixed(1)}"><span class="unit-label">kW</span></div>`;
+      h+=`<div class="q-help" style="margin-top:8px;margin-bottom:0"><div class="tip"> Critical load = essential appliances during outage (lights, ref, fans, WiFi). We estimated ${avgKw.toFixed(1)} kW based on your consumption.</div></div>`;
+      break;
+    case 'budget':
+      h+=`<div class="q-text">Do you have a budget range in mind?</div><div class="q-help">Optional - helps us tailor the recommendation.</div>`;
+      h+=mkChoices('budget',[
+        {v:'under200k',t:'Under 200,000',d:'Small residential'},
+        {v:'200k-500k',t:'200K - 500K',d:'Mid-size residential / small commercial'},
+        {v:'500k-1m',t:'500K - 1M',d:'Large residential / commercial'},
+        {v:'1m-5m',t:'1M - 5M',d:'Commercial / industrial'},
+        {v:'5m+',t:'5M and above',d:'Large commercial / institutional'},
+        {v:'nobudget',t:'No budget yet',d:'Just show me what\'s right'}
+      ],true);
+      break;
+    case 'timeline':
+      h+=`<div class="q-text">When are you hoping to go solar?</div><div class="q-help">This helps us schedule your free site inspection.</div>`;
+      h+=mkChoices('timeline',[
+        {v:'asap',i:'',t:'As soon as possible',d:'Ready to move forward'},
+        {v:'1-3mo',i:'',t:'Within 1-3 months',d:'Planning and budgeting'},
+        {v:'3-6mo',i:'',t:'3-6 months',d:'Still exploring'},
+        {v:'justlooking',i:'',t:'Just exploring',d:'Getting information'}
+      ],true);
+      break;
+  }
+
+// Nav
+    h+=`<div class="nav-row">`;
+    if(cQ>0)h+=`<button class="btn btn-back" onclick="goBack()"> Back</button>`;else h+=`<div></div>`;
+    const isLast=getVisibleIndex()===getVisibleSteps().length-1;
+    h+=`<button class="btn btn-next" id="btnN" onclick="goNext()">${isLast?'See My Recommendation ':'Continue '}</button></div></div>`;
+
+    area.innerHTML=h;
+
+    // Post-render hooks
+    if(s.id==='siteLocation')setTimeout(initMap,150);
+    const iAddr=document.getElementById('iAddr');if(iAddr)iAddr.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();searchAddr()}});
+  }
+
+  function mkChoices(key,opts,cols2){
+    let h=`<div class="choices ${cols2?'c2':''}">`;
+    opts.forEach(o=>{h+=`<div class="choice ${A[key]===o.v?'sel':''}" data-val="${o.v}" onclick="selC(this,'${key}')">${o.i?`<div class="ci">${o.i}</div>`:''}<div class="ct">${o.t}</div>${o.d?`<div class="cd">${o.d}</div>`:''}</div>`});
+    return h+`</div>`;
+  }
+
+  function selC(el,k){el.parentElement.querySelectorAll('.choice').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');A[k]=el.dataset.val}
+
+  function getAvgLoadKw(){
+    const mBill=A._billAvg||0;
+    const rate=DU_RATES[A._du]||10.5;
+    const mkwh=mBill>0?mBill/rate:0;
+    return mkwh>0?mkwh/30/24*3:.5;
+  }
+
+  function updateBattCalc(){
+    const hrs=parseInt(document.getElementById('iBattHrs')?.value)||4;
+    const load=parseFloat(document.getElementById('iBattLoad')?.value)||getAvgLoadKw();
+    const needed=load*hrs/.9;
+    const units=Math.ceil(needed/5.12);
+    const total=units*5.12;
+    document.getElementById('battHrsVal').textContent=`${hrs} hours`;
+    document.getElementById('battCalcVal').innerHTML=` <strong>${total.toFixed(1)} kWh</strong> battery bank needed (${units} × 51.2V 100Ah units)`;
+    A._battHrs=hrs;A._battLoad=load;
+  }
+
+  // COLLECT / VALIDATE
+  function collect(){
+    const s=STEPS[cQ];
+    switch(s.id){
+      case 'clientName':A.clientName=document.getElementById('iName')?.value?.trim()||'';A.contactNumber=document.getElementById('iPhone')?.value?.trim()||'';A.email=document.getElementById('iEmail')?.value?.trim()||'';break;
+      case 'siteLocation':A.siteAddress=document.getElementById('iAddr')?.value?.trim()||A._addr||'';break;
+      case 'consumption':
+        A._bill1=document.getElementById('iBill1')?.value||'';
+        A._bill2=document.getElementById('iBill2')?.value||'';
+        A._bill3=document.getElementById('iBill3')?.value||'';
+        calcBillAverage();
+        A._du=document.getElementById('iDu')?.value||'';
+        break;
+      case 'roofInfo':A._roofType=document.getElementById('iRoofType')?.value||'';A._roofL=document.getElementById('iRL')?.value||'';A._roofW=document.getElementById('iRW')?.value||'';A._roofDir=document.getElementById('iRD')?.value||'';A._obs=document.getElementById('iObs')?.value||'';break;
+      case 'battery':A._battHrs=parseInt(document.getElementById('iBattHrs')?.value)||4;A._battLoad=parseFloat(document.getElementById('iBattLoad')?.value)||getAvgLoadKw();break;
+    }
+  }
+
+  function validate(){
+    const s=STEPS[cQ];
+    if(s.id==='clientName'){
+      let ok=true;
+      if(!A.clientName||!isValidName(A.clientName)){showFieldError('iName','Please enter a valid name (letters only, no numbers)');ok=false}
+      if(!A.contactNumber||!isValidPhone(A.contactNumber)){showFieldError('iPhone','Please enter a valid phone number (digits only, min 7 digits)');ok=false}
+      if(A.email&&!isValidEmail(A.email)){showFieldError('iEmail','Please enter a valid email address');ok=false}
+      return ok;
+    }
+    if(s.id==='propertyType'||s.id==='priority'||s.id==='sysType'||s.id==='budget'||s.id==='timeline')return!!A[s.id];
+    if(s.id==='siteLocation'){
+      const hasPin=!!(A._lat&&A._lng);
+      const hasAddr=!!(document.getElementById('iAddr')?.value?.trim());
+      if(!hasPin&&!hasAddr){
+        const ps=document.getElementById('pStat');if(ps){ps.className='pin-status err';ps.textContent='Please pin a location on the map or type an address.'}
+        return false;
+      }
+      return true;
+    }
+    if(s.id==='consumption'){
+      let ok=true;
+      const b1=parseFloat(A._bill1)||0;
+      if(b1<=0){showFieldError('iBill1','Please enter at least Month 1 bill amount');ok=false}
+      const b2=parseFloat(A._bill2)||0;
+      const b3=parseFloat(A._bill3)||0;
+      if(A._bill2&&b2<0){showFieldError('iBill2','Please enter a valid peso amount');ok=false}
+      if(A._bill3&&b3<0){showFieldError('iBill3','Please enter a valid peso amount');ok=false}
+      return ok&&(A._billAvg>0);
+    }
+    return true;
+  }
+
+  function goNext(){
+    collect();
+    if(!validate()){const b=document.getElementById('btnN');b.style.background='#cc3333';b.style.color='#fff';b.textContent='Please complete this step';setTimeout(()=>{b.style.background='';b.style.color='';b.textContent='Continue '},1500);return}
+    if(getVisibleIndex()===getVisibleSteps().length-1){showResults();return}
+    cQ++;
+    while(cQ<STEPS.length&&!shouldShow(cQ))cQ++;
+    render();window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function goBack(){collect();cQ--;while(cQ>0&&!shouldShow(cQ))cQ--;render();window.scrollTo({top:0,behavior:'smooth'})}
+
+  // TIER CALCULATOR
+  function calcTier(t, monthlyKwh, kwhRate){
+    const p=t.panel, inv=t.inv||{}, mk=t.markup;
+    const dailyKwh=monthlyKwh/30;
+    const neededKwp=dailyKwh/(PSH*(1-LOSS));
+    const nP=Math.max(Math.ceil(neededKwp*1000/p.w),2);
+    const actualKwp=nP*p.w/1000;
+    const sC=Math.max(1,Math.ceil(nP/10));
+    const rQ=Math.round(nP*1.8),lfQ=rQ*4,rcQ=rQ,mcQ=nP*3+6,ecQ=sC*10;
+    const pvQ=sC*30,hdQ=Math.round(pvQ/2),pcQ=hdQ*3,peQ=Math.round(hdQ/2);
+
+    let mat=0;
+    mat+=nP*p.price; mat+=inv.price||0;
+    if(t.batt) mat+=t.batt.price;
+    mat+=rQ*t.mount.rail+lfQ*t.mount.lfoot+rcQ*t.mount.rcon+mcQ*t.mount.mid+ecQ*t.mount.end;
+    mat+=sC*t.prot.dcmcb+sC*t.prot.dcspd+t.prot.acmcb+t.prot.acspd;
+    if(t.prot.ats) mat+=t.prot.ats;
+    if(t.prot.battmccb) mat+=t.prot.battmccb;
+    if(t.prot.rsd) mat+=t.prot.rsd;
+    mat+=pvQ*t.wire.pv+t.wire.gnd+t.wire.ac+hdQ*t.wire.hdpe+pcQ*t.wire.clamp+peQ*t.wire.elbow+2*t.wire.tray;
+    if(t.wire.battcable) mat+=t.wire.battcableQty*t.wire.battcable;
+    mat+=sC*t.cons.mc4+(nP+rQ)*t.cons.lug+t.cons.comb+t.cons.grod+2*t.cons.ctie+t.cons.cement+2*t.cons.seal;
+
+    const matSRP=Math.round(mat*(1+mk));
+    const totalSRP=matSRP+t.labor;
+
+    const spaceM2=Math.round(nP*p.area*1.4);
+    const dF=DIR_F[A._roofDir||'unknown'];
+    const dailyYield=actualKwp*PSH*(1-LOSS)*dF;
+    const monthlySavings=Math.round(dailyYield*30*kwhRate);
+    const annualSavings=monthlySavings*12;
+    const roiMonths=totalSRP/monthlySavings;
+    const roiYears=(roiMonths/12).toFixed(1);
+
+    return{nP,actualKwp,sC,totalSRP,matSRP,spaceM2,dailyYield,monthlySavings,annualSavings,roiYears,roiMonths:Math.round(roiMonths),
+      panelCount:nP,panelWp:p.w,invKw:inv.kw||0,battKwh:t.batt?t.batt.kwh:0};
+  }
+
+  // RESULTS
+  function showResults(){
+    const rate=DU_RATES[A._du]||10.5;
+    const mBill=A._billAvg||0;
+    const mKwh=mBill>0?mBill/rate:0;
+    const st=A.sysType||'gridtied';
+    const tiers=TIERS[st];
+    if(!tiers){document.getElementById('Q').innerHTML='<div class="q-card"><div class="q-text">Error: System type not found</div></div>';return}
+
+    const e=calcTier(tiers.entry,mKwh,rate);
+    const m=calcTier(tiers.mid,mKwh,rate);
+    const hi=calcTier(tiers.high,mKwh,rate);
+    const today=new Date().toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});
+
+    const sL=st==='hybrid'?'Hybrid (Solar + Battery)':'Grid-Tied'+(A.priority==='zeroBill'?' (Net Metering)':'');
+    const hC=A._lat&&A._lng,cT=hC?`${A._lat.toFixed(6)}, ${A._lng.toFixed(6)}`:'-';
+    const dA=A.siteAddress||A._addr||'-',gM=hC?`https://www.google.com/maps?q=${A._lat},${A._lng}`:'';
+    const pLabels={residential:'Residential',commercial:'Commercial',industrial:'Industrial',institutional:'Institutional'};
+    const gLabels={savings:'Bill Reduction',zeroBill:'Zero Bill / Net Metering',backup:'Backup Power',offgrid:'Off-Grid Independence'};
+    const tLabels={asap:'Immediately','1-3mo':'1-3 Months','3-6mo':'3-6 Months','justlooking':'Exploring'};
+    const rL=parseFloat(A._roofL)||0,rW=parseFloat(A._roofW)||0;
+
+    document.getElementById('pFill').style.width='100%';document.getElementById('pStep').textContent='';document.getElementById('pLabel').textContent='Your Recommendation';
+
+    let html=`<div class="result-wrap">
+      <div class="result-hero">
+        <h2>Your Solar System Estimate</h2>
+        <div class="rs">${sL}</div>
+        <div class="ru">Prepared ${today} · Avg. Bill: ${mBill.toLocaleString()}/mo</div>
+      </div>
+
+      <div class="sc">
+        <h3> Short Project Detail</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+          <span style="display:inline-block;background:var(--navy);color:#fff;font-size:10px;padding:3px 10px;border-radius:20px;font-weight:600">${sL}</span>
+          <span style="display:inline-block;background:var(--navy);color:#fff;font-size:10px;padding:3px 10px;border-radius:20px;font-weight:600">${A._du?A._du.toUpperCase():'-'}</span>
+          <span style="display:inline-block;background:var(--navy);color:#fff;font-size:10px;padding:3px 10px;border-radius:20px;font-weight:600">${A._roofType||'-'}</span>
+        </div>
+        <table class="st">
+          <tr><td class="sl">Client</td><td class="sv">${A.clientName||'-'}</td></tr>
+          <tr><td class="sl">Location</td><td class="sv" style="font-size:12px">${dA}</td></tr>
+          <tr><td class="sl">Contact</td><td class="sv">${A.contactNumber||'-'}</td></tr>
+          <tr><td class="sl">Monthly Consumption</td><td class="sv mono">${Math.round(mKwh).toLocaleString()} kWh</td></tr>
+          <tr><td class="sl">Rate</td><td class="sv mono">${rate.toFixed(2)}/kWh</td></tr>
+          <tr><td class="sl">Avg. Monthly Bill</td><td class="sv mono">${mBill.toLocaleString()}</td></tr>
+          <tr><td class="sl">Priority</td><td class="sv">${gLabels[A.priority]||'-'}</td></tr>
+        </table>
+      </div>
+
+      <div class="sc"><h3> Recommended System Options</h3>
+      <div class="options-grid">
+        ${[{d:e,t:tiers.entry},{d:m,t:tiers.mid},{d:hi,t:tiers.high}].map(({d,t})=>`
+        <div class="opt-card ${t.color}">
+          <div class="opt-badge">${t.tag}</div>
+          <h4>${t.label}</h4>
+          <div class="opt-sub">${d.nP} panels × ${d.panelWp}W</div>
+          <div class="opt-row"><span class="lbl">System Size</span><span class="val">${d.actualKwp.toFixed(2)} kWp</span></div>
+          <div class="opt-row"><span class="lbl">Inverter</span><span class="val">${d.invKw} kW</span></div>
+          ${d.battKwh>0?`<div class="opt-row"><span class="lbl">Battery</span><span class="val">${d.battKwh} kWh</span></div>`:''}
+          <div class="opt-row"><span class="lbl">Panels</span><span class="val">${d.nP} pcs</span></div>
+          <div class="opt-row"><span class="lbl">Space Needed</span><span class="val">~${d.spaceM2} m²</span></div>
+          <div class="opt-price">${d.totalSRP.toLocaleString()}</div>
+          <div class="opt-per-wp">${(d.totalSRP/(d.actualKwp*1000)).toFixed(1)}/Wp · ${Math.round(d.totalSRP/d.actualKwp).toLocaleString()}/kWp</div>
+        </div>`).join('')}
+      </div>
+
+      <div class="note-box">
+        <strong>Note:</strong> Option 1 is <strong>Entry Level</strong> - best value per watt using budget-tier components.
+        Option 2 is <strong>Mid Range</strong> - Tier-1 panels with a quality inverter, best balance of cost and performance.
+        Option 3 is <strong>High End</strong> - premium components with oversized inverter for future expansion${st==='hybrid'?' and maximum battery capacity':' and fire safety RSD'}.
+      </div>
+      </div>
+
+      <div class="sc"><h3> ROI Computation</h3>
+      <div class="roi-grid">
+        ${[{d:e,t:tiers.entry},{d:m,t:tiers.mid},{d:hi,t:tiers.high}].map(({d,t})=>`
+        <div class="roi-card ${t.color}">
+          <div style="font-size:10px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">${t.label}</div>
+          <div class="roi-years">${d.roiYears}<small> years</small></div>
+          <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px">(${d.roiMonths} months)</div>
+          <div class="roi-row"><span class="lbl">Monthly Savings</span><span class="val">${d.monthlySavings.toLocaleString()}</span></div>
+          <div class="roi-row"><span class="lbl">Annual Savings</span><span class="val">${d.annualSavings.toLocaleString()}</span></div>
+          <div class="roi-row"><span class="lbl">Daily Yield</span><span class="val">${d.dailyYield.toFixed(1)} kWh</span></div>
+        </div>`).join('')}
+      </div>
+      </div>
+
+      ${hC?`<div class="sc"><h3> Site Location</h3><div class="result-map-wrap"><div id="rMap" class="result-map"></div></div>
+        <table class="st" style="margin-top:12px"><tr><td class="sl">Coordinates</td><td class="sv mono">${cT}</td></tr><tr><td class="sl">Address</td><td class="sv" style="font-size:12px">${dA}</td></tr>
+        ${A._city?`<tr><td class="sl">City</td><td class="sv">${A._city}</td></tr>`:''}${A._prov?`<tr><td class="sl">Province</td><td class="sv">${A._prov}</td></tr>`:''}
+        <tr><td class="sl">Google Maps</td><td class="sv"><a href="${gM}" target="_blank" style="color:var(--gold);font-size:12px">Open </a></td></tr></table></div>`:''}
+
+      <div class="sc" id="cSum"><h3> Client Data Summary</h3><table class="st">
+        <tr><td class="sl">Client</td><td class="sv">${A.clientName||'-'}</td></tr>
+        <tr><td class="sl">Email</td><td class="sv">${A.email||'-'}</td></tr>
+        <tr><td class="sl">Phone</td><td class="sv">${A.contactNumber||'-'}</td></tr>
+        <tr><td class="sl">Property</td><td class="sv">${pLabels[A.propertyType]||'-'}</td></tr>
+        <tr><td class="sl">Address</td><td class="sv" style="font-size:12px">${dA}</td></tr>
+        <tr><td class="sl">GPS</td><td class="sv mono" style="font-size:12px">${cT}</td></tr>
+        ${gM?`<tr><td class="sl">Map</td><td class="sv"><a href="${gM}" target="_blank" style="color:var(--gold);font-size:11px">Google Maps </a></td></tr>`:''}
+        <tr><td class="sl">Priority</td><td class="sv">${gLabels[A.priority]||'-'}</td></tr>
+        <tr><td class="sl">System</td><td class="sv">${sL}</td></tr>
+        <tr><td class="sl">kWh/mo</td><td class="sv mono">${Math.round(mKwh).toLocaleString()}</td></tr>
+        <tr><td class="sl">Rate</td><td class="sv mono">${rate.toFixed(2)}/kWh</td></tr>
+        <tr><td class="sl">Avg. Bill</td><td class="sv mono">${mBill.toLocaleString()}</td></tr>
+        <tr><td class="sl">Bill 1</td><td class="sv mono">${A._bill1?parseFloat(A._bill1).toLocaleString():'-'}</td></tr>
+        <tr><td class="sl">Bill 2</td><td class="sv mono">${A._bill2?parseFloat(A._bill2).toLocaleString():'-'}</td></tr>
+        <tr><td class="sl">Bill 3</td><td class="sv mono">${A._bill3?parseFloat(A._bill3).toLocaleString():'-'}</td></tr>
+        <tr><td class="sl">Roof</td><td class="sv">${A._roofType||'-'} ${rL&&rW?'· '+rL+'m×'+rW+'m':''}</td></tr>
+        <tr><td class="sl">Direction</td><td class="sv">${A._roofDir||'-'}</td></tr>
+        <tr><td class="sl">Obstructions</td><td class="sv">${A._obs||'None'}</td></tr>
+        <tr><td class="sl">Budget</td><td class="sv">${A.budget==='nobudget'?'Not specified':A.budget||'-'}</td></tr>
+        <tr><td class="sl">Timeline</td><td class="sv">${tLabels[A.timeline]||'-'}</td></tr>
+      </table></div>
+
+      <div class="note-box"><strong>Accuracy Disclaimer:</strong> This estimate is <strong>partial</strong> and guarantees <strong>70% accuracy</strong> only. Calculation basis: PSH=${PSH} · System Loss=${LOSS*100}% · Degradation=${DEGRAD*100}%/yr · Direction Factor=${DIR_F[A._roofDir||'unknown']}<br><em>To get your detailed proposal, please book a site assessment below.</em></div>
+
+      <div class="cta-box">
+        <h3>Ready for a Site Assessment?</h3>
+        
+        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px; margin-top:20px;">
+          <button onclick="openCalendar('ONLINE', '${dA}')" style="background:#4285F4; color:#fff; border:none; padding:14px; border-radius:30px; font-weight:700; cursor:pointer; box-shadow: 0 4px 12px rgba(66,133,244,0.3);">
+             Book Online Consultation
+          </button>
+          <button onclick="openCalendar('F2F', '${dA}')" style="background:var(--gold); color:var(--navy); border:none; padding:14px; border-radius:30px; font-weight:700; cursor:pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+             Book Site Visit (Face-to-Face)
+          </button>
+        </div>
+
+        <div id="emailStatus" style="margin:12px 0;padding:12px 18px;border-radius:10px;font-size:13px;display:none"></div>
+        
+        <div style="display:flex; gap:8px; justify-content:center;">
+          <button class="btn-gold" onclick="copyAll()" style="background:rgba(255,255,255,.15);color:#fff;box-shadow:none;font-size:13px;padding:10px 24px"> Copy Summary</button>
+          <button class="btn-gold" onclick="downloadSummary()" style="background:rgba(255,255,255,.15);color:#fff;box-shadow:none;font-size:13px;padding:10px 24px"> Download Summary</button>
+        </div>
+      </div>
+      
+      <div style="text-align:center;margin-top:16px"><button class="btn btn-back" onclick="fullReset()"> Start Over</button></div>
+      <div class="footer-bar"><strong>Apollo Solar Ventures Inc.</strong><br>1864 Dist. 4A, Brgy. Marauoy, Lipa City, Batangas 4217<br>"Delivering the Sun's Free Power to You."</div>
+    </div>
+
+    <div id="calendarModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center;">
+      <div style="width:90%; max-width:1000px; height:85%; background:#fff; border-radius:15px; position:relative; overflow:hidden;">
+        <button onclick="document.getElementById('calendarModal').style.display='none'" 
+                style="position:absolute; top:10px; right:15px; font-size:25px; border:none; background:none; cursor:pointer; color:#333; font-weight:bold;">×</button>
+        <iframe id="calendarIframe" src="" style="width:100%; height:100%; border:none;"></iframe>
+      </div>
+    </div>`;
+
+    document.getElementById('Q').innerHTML=html;
+
+    if(hC)setTimeout(()=>{const rm=L.map('rMap',{zoomControl:false,dragging:false,scrollWheelZoom:false}).setView([A._lat,A._lng],16);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(rm);L.marker([A._lat,A._lng],{icon:mkIcon()}).addTo(rm)},200);
+
+    // Auto-send email silently
+    setTimeout(()=>sendToApollo(rate,mBill,mKwh,sL,dA,cT,gM,pLabels,gLabels,tLabels,rL,rW),300);
+  }
+
+  // BOOKING LOGIC
+  function openCalendar(type, addr) {
+    const encodedAddress = encodeURIComponent(addr);
+    const name = encodeURIComponent(A.clientName || '');
+    const email = encodeURIComponent(A.email || '');
+    
+    const onlineLink = "https://calendar.app.google/cNhbFKcpRAVirP9c7";
+    const siteVisitLink = "https://calendar.app.google/SNYP3DX2yREyzHp77";
+
+    let finalLink = (type === 'ONLINE') ? onlineLink : siteVisitLink;
+    finalLink += `?name=${name}&email=${email}&description=SITE%20VISIT%20ADDRESS:%20${encodedAddress}`;
+
+    document.getElementById('calendarIframe').src = finalLink;
+    document.getElementById('calendarModal').style.display = 'flex';
+  }
+
+  function sendToApollo(rate,mBill,mKwh,sL,dA,cT,gM,pLabels,gLabels,tLabels,rL,rW){
+    const now=new Date();
+    const dateStr=now.toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'})+' '+now.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',hour12:true});
+    
+    const confirmedAddress = dA;
+    const stEl=document.getElementById('emailStatus');
+
+    fetch('https://formsubmit.co/ajax/jocson.bernard@gmail.com',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({
+        _subject:'New Solar Estimate - '+(A.clientName||'Client')+' - '+sL,
+        _template:'table',
+        _cc: A.email || '', // CC the client if email is provided
+        'Client Name':A.clientName||'-',
+        'Email':A.email||'-',
+        'Phone':A.contactNumber||'-',
+        'Property':pLabels[A.propertyType]||'-',
+        'Site Visit Address':confirmedAddress,
+        'Original Map Address':dA,
+        'GPS':cT,
+        'Map Link':gM||'-',
+        'Priority':gLabels[A.priority]||'-',
+        'System Type':sL,
+        'Monthly kWh':Math.round(mKwh).toLocaleString(),
+        'Rate':'${rate.toFixed(2)}/kWh',
+        'Avg Monthly Bill':'${mBill.toLocaleString()}',
+        'Bill Month 1':'${(A._bill1?parseFloat(A._bill1).toLocaleString():'-')}',
+        'Bill Month 2':'${(A._bill2?parseFloat(A._bill2).toLocaleString():'-')}',
+        'Bill Month 3':'${(A._bill3?parseFloat(A._bill3).toLocaleString():'-')}',
+        'Roof':((A._roofType||'-')+' '+(rL&&rW?'· '+rL+'m×'+rW+'m':'')).trim(),
+        'Direction':A._roofDir||'-',
+        'Obstructions':A._obs||'None',
+        'Budget':A.budget==='nobudget'?'Not specified':A.budget||'-',
+        'Timeline':tLabels[A.timeline]||'-',
+        'Date Submitted':dateStr
+      })
+    })
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.success){
+        if(stEl){stEl.style.display='block';stEl.style.background='rgba(46,204,113,.15)';stEl.style.color='#1a7a4a';stEl.textContent=' Your information has been sent to Apollo Solar and a copy has been sent to your email.'}
+      }
+    })
+    .catch(()=>{});
+  }
+
+  function fullReset(){
+    cQ=0;locMap=null;locMarker=null;
+    Object.keys(A).forEach(k=>delete A[k]);
+    render();window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function downloadSummary(){
+    const rows=document.querySelectorAll('#cSum .st tr');
+    let t='   APOLLO SOLAR VENTURES - CLIENT DATA   \n\n';
+    rows.forEach(r=>{const c=r.querySelectorAll('td');if(c.length===2)t+=c[0].textContent.trim().padEnd(20)+c[1].textContent.trim()+'\n'});
+    if(A._lat)t+=`\nGPS: ${A._lat.toFixed(6)}, ${A._lng.toFixed(6)}\nMap: https://www.google.com/maps?q=${A._lat},${A._lng}\n`;
+    const now=new Date();
+    t+=`\n\nDate: ${now.toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:true})}\nPrepared by: Apollo Solar Ventures Inc.\n`;
+    const blob=new Blob([t],{type:'text/plain'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=`Apollo_Solar_Estimate_${(A.clientName||'Client').replace(/\s+/g,'_')}.txt`;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  }
+
+  function copyAll(){
+    const rows=document.querySelectorAll('#cSum .st tr');
+    let t='   APOLLO SOLAR VENTURES - CLIENT DATA   \n\n';
+    rows.forEach(r=>{const c=r.querySelectorAll('td');if(c.length===2)t+=c[0].textContent.trim().padEnd(20)+c[1].textContent.trim()+'\n'});
+    const btn=event.target;
+    navigator.clipboard.writeText(t).then(()=>{
+      btn.textContent=' Copied!';
+      setTimeout(()=>{btn.textContent=' Copy Summary'},2500);
+    });
+  }
+
+  render();
+  </script>
+  </body>
+  </html>
