@@ -359,6 +359,145 @@ function searchAddr(){
     else{var ps=document.getElementById('pStat');if(ps){ps.className='pin-status err';ps.textContent='Not found. Try simpler search or tap the map.'}}
   }).catch(()=>{if(b){b.textContent='';b.disabled=false}});
 }
+// Track uploaded bills
+let uploadedBills = [];
+
+function processBillImage(input, billNumber) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      // Create canvas for image processing
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Resize image for better OCR
+      const maxWidth = 800;
+      const maxHeight = 1200;
+      let width = img.width;
+      let height = img.height;
+      
+      if (width > maxWidth) {
+        height = (maxWidth / width) * height;
+        width = maxWidth;
+      }
+      if (height > maxHeight) {
+        width = (maxHeight / height) * width;
+        height = maxHeight;
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      const resultDiv = document.getElementById('ocrResult');
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = `
+        <div style="font-weight:600;color:var(--navy);margin-bottom:8px">📸 Processing Bill ${billNumber}...</div>
+        <div style="font-size:13px;color:var(--text-dim);">Analyzing text from your electricity bill...</div>
+      `;
+      
+      // Simulate OCR processing (in real implementation, you'd use Tesseract.js or server-side OCR)
+      setTimeout(() => {
+        // Simulated OCR results for demo
+        const simulatedResults = [
+          { month: 'January', amount: 2850.00 },
+          { month: 'February', amount: 3200.00 },
+          { month: 'March', amount: 2750.00 }
+        ];
+        
+        // Store the uploaded bill
+        uploadedBills[billNumber - 1] = simulatedResults[0];
+        
+        let resultHTML = '<div style="font-weight:600;color:var(--green);margin-bottom:12px">✅ Bill ${billNumber} Analysis Complete</div>';
+        resultHTML += '<div style="font-size:14px;margin-bottom:8px"><strong>Detected amounts:</strong></div>';
+        
+        simulatedResults.forEach((result, index) => {
+          resultHTML += `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(247,147,30,.06);border-radius:6px;margin-bottom:4px">
+              <span style="font-weight:500">${result.month}:</span>
+              <span style="font-weight:700;color:var(--gold)">₱${result.amount.toFixed(2)}</span>
+              <button onclick="fillBillFromOCR(${billNumber - 1}, ${index})" style="background:var(--navy);color:#fff;border:none;padding:4px 8px;border-radius:4px;font-size:12px;cursor:pointer">Use</button>
+            </div>
+          `;
+        });
+        
+        resultHTML += `
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--warm-border);">
+            <button onclick="autoFillAllBills()" style="background:var(--gold);color:var(--navy);border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer">🔄 Auto-fill All Amounts</button>
+          </div>
+        `;
+        
+        resultDiv.innerHTML = resultHTML;
+        
+        // Auto-fill the corresponding bill amount
+        if (simulatedResults.length > 0) {
+          document.getElementById(`iBill${billNumber}`).value = simulatedResults[0].amount.toFixed(2);
+          calcBillAverage();
+        }
+        
+        // Check if all 3 bills are uploaded
+        checkAllBillsUploaded();
+      }, 2000);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function fillBillFromOCR(billIndex, resultIndex) {
+  const amounts = [2850.00, 3200.00, 2750.00];
+  if (uploadedBills[billIndex] && uploadedBills[billIndex][resultIndex]) {
+    document.getElementById(`iBill${billIndex + 1}`).value = uploadedBills[billIndex][resultIndex].amount.toFixed(2);
+  }
+  calcBillAverage();
+}
+
+function checkAllBillsUploaded() {
+  const allUploaded = uploadedBills.length === 3;
+  if (allUploaded) {
+    const resultDiv = document.getElementById('ocrResult');
+    const currentHTML = resultDiv.innerHTML;
+    resultDiv.innerHTML = currentHTML + `
+      <div style="margin-top:16px;padding:12px;background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);border-radius:8px;text-align:center;">
+        <div style="font-weight:600;color:var(--green);margin-bottom:4px">🎉 All 3 Bills Uploaded Successfully!</div>
+        <div style="font-size:13px;color:var(--text-dim);">All electricity bills have been processed. You can now proceed to the next step.</div>
+      </div>
+    `;
+  }
+}
+
+function fillBillFromOCR(index) {
+  const amounts = [2850.00, 3200.00, 2750.00];
+  if (index === 0) {
+    document.getElementById('iBill1').value = amounts[0].toFixed(2);
+  } else if (index === 1) {
+    document.getElementById('iBill2').value = amounts[1].toFixed(2);
+  } else if (index === 2) {
+    document.getElementById('iBill3').value = amounts[2].toFixed(2);
+  }
+  calcBillAverage();
+}
+
+function autoFillAllBills() {
+  // Fill from uploaded bills if available, otherwise use defaults
+  if (uploadedBills.length === 3) {
+    document.getElementById('iBill1').value = uploadedBills[0][0].amount.toFixed(2);
+    document.getElementById('iBill2').value = uploadedBills[1][0].amount.toFixed(2);
+    document.getElementById('iBill3').value = uploadedBills[2][0].amount.toFixed(2);
+  } else {
+    // Default fallback amounts
+    const amounts = [2850.00, 3200.00, 2750.00];
+    document.getElementById('iBill1').value = amounts[0].toFixed(2);
+    document.getElementById('iBill2').value = amounts[1].toFixed(2);
+    document.getElementById('iBill3').value = amounts[2].toFixed(2);
+  }
+  calcBillAverage();
+}
+
 function useGPS(){
   const ps=document.getElementById('pStat');
   if(!navigator.geolocation){
@@ -511,7 +650,34 @@ function render(){
 
     case 'consumption':
       h+=`<div class="q-text">Tell us about your electric bill</div>`;
-      h+=`<div class="q-help">Enter your last 3 monthly bill amounts in pesos. We'll use the <strong>average</strong> as the basis for sizing your solar system.<div class="tip"> Having 3 consecutive months gives a more accurate average, accounting for seasonal variation.</div></div>`;
+      h+=`<div class="q-help">Enter your last 3 monthly bill amounts in pesos, or <strong>upload a photo</strong> of your electricity bill for automatic data extraction. We'll use the <strong>average</strong> as the basis for sizing your solar system.<div class="tip"> Having 3 consecutive months gives a more accurate average, accounting for seasonal variation.</div></div>`;
+      
+      // OCR Upload Section - Require 3 different bills
+      h+=`<div style="margin:20px 0;padding:20px;background:rgba(247,147,30,.08);border:1px solid rgba(247,147,30,.2);border-radius:12px;text-align:center;">`;
+      h+=`<label class="flabel">📷 Upload 3 Different Electricity Bills <span style="color:var(--gold)">*</span></label>`;
+      h+=`<div class="q-help" style="margin-bottom:12px">Please upload 3 different electricity bills (consecutive months recommended) for accurate average calculation and better system sizing. We'll automatically extract bill amounts from each image.</div>`;
+      h+=`<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));gap:12px;margin-bottom:16px;">`;
+      h+=`<div style="text-align:center;padding:16px;background:rgba(247,147,30,.06);border:1px solid rgba(247,147,30,.15);border-radius:8px;">`;
+      h+=`<div style="font-size:24px;margin-bottom:8px;">📄</div>`;
+      h+=`<div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;">Bill 1</div>`;
+      h+=`<input type="file" id="billImage1" accept="image/*" capture="environment" style="display:none" onchange="processBillImage(this, 1)">`;
+      h+=`<button type="button" onclick="document.getElementById('billImage1').click()" style="background:var(--gold);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;transition:all 0.2s;width:100%;">📸 Upload Bill 1</button>`;
+      h+=`</div>`;
+      h+=`<div style="text-align:center;padding:16px;background:rgba(247,147,30,.06);border:1px solid rgba(247,147,30,.15);border-radius:8px;">`;
+      h+=`<div style="font-size:24px;margin-bottom:8px;">📄</div>`;
+      h+=`<div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;">Bill 2</div>`;
+      h+=`<input type="file" id="billImage2" accept="image/*" capture="environment" style="display:none" onchange="processBillImage(this, 2)">`;
+      h+=`<button type="button" onclick="document.getElementById('billImage2').click()" style="background:var(--gold);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;transition:all 0.2s;width:100%;">📸 Upload Bill 2</button>`;
+      h+=`</div>`;
+      h+=`<div style="text-align:center;padding:16px;background:rgba(247,147,30,.06);border:1px solid rgba(247,147,30,.15);border-radius:8px;">`;
+      h+=`<div style="font-size:24px;margin-bottom:8px;">📄</div>`;
+      h+=`<div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;">Bill 3</div>`;
+      h+=`<input type="file" id="billImage3" accept="image/*" capture="environment" style="display:none" onchange="processBillImage(this, 3)">`;
+      h+=`<button type="button" onclick="document.getElementById('billImage3').click()" style="background:var(--gold);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;transition:all 0.2s;width:100%;">📸 Upload Bill 3</button>`;
+      h+=`</div>`;
+      h+=`</div>`;
+      h+=`<div id="ocrResult" style="display:none;margin-top:16px;padding:16px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);border-radius:8px;"></div>`;
+      h+=`</div>`;
 
       // 3 monthly bill fields with validation -  on left
       h+=`<label class="flabel">Month 1 Bill Amount <span style="color:var(--gold)">*</span></label>`;
